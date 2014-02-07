@@ -1,6 +1,10 @@
 .room {
 	width: 1000px;
-	height: 1000px;
+	height: 800px;
 	margin: auto;
+}
+
+img {
+	height: 150px;
 }
 
