@@ -80,21 +80,23 @@ Room.prototype.makeItems = function(num) {
 		this.items.push(new Item('Poison',true,'health',-10,'images/poison.png',i+num));
 	}
 }
-
 Room.prototype.drawRoom = function(){
+	var roomElem = (roomTemplate(this));
 	$('#view').html(roomTemplate(this));
 	for (var i=0; i<this.items.length; i++){
-		this.addItem(this.items[i]);
+		this.addItem(this.items[i], roomElem);
 	}
 	for (var i=0; i<this.monsters.length; i++){
-		this.addItem(this.monsters[i]);
+		this.addItem(this.monsters[i], roomElem);
 	}
 	world.player.drawPlayer();
+	return roomElem
+	
 }
 var roomTemplate = Handlebars.compile($('#roomTemplate').html());
-Room.prototype.addItem = function(item){
+Room.prototype.addItem = function(item,elem){
 	if(item) {
-		$('.room').append(itemTemplate(item));
+		elem.append(itemTemplate(item));
 	}
 }
 var itemTemplate = Handlebars.compile($('#itemTemplate').html());
@@ -164,11 +166,6 @@ World.prototype.init = function(numRooms){
 	this.player = new Player()
 
 }
-World.prototype.drawWorld = function(){
-	for (var i=0; i<this.rooms.length; i++) {
-		roomTemplate(room);
-	}
-}
 World.prototype.getCurrentRoom = function(){
 	return this.map.arr[this.map.currentRoom.y][this.map.currentRoom.x];
 }
@@ -198,30 +195,40 @@ var attack = function(player, monster, playerTurn, thisRoom){
 		thisRoom.monsters[thisRoom.monsters.indexOf(monster)] = null;
 		$('.monster[data-id='+monster.id+']').remove();
 		console.log('you win');
-		return;
 	} else if (player.health<=0) {
 		console.log('you died');
-		return;
+	} else {
+		setTimeout(function(){
+			attack(player, monster, playerTurn, thisRoom);
+		}, 1000);
 	}
-	setTimeout(function(){
-		attack(player, monster, playerTurn, thisRoom);
-	}, 1000);
 }
+
+var monsterMenu = '<div class="monsterMenu">'+
+		'<button class="attack">Attack</button>'+
+		'<button class="examine">Examine</button>'+
+	'</div>'
 
 var world = new World();
 world.init(9);
 world.rooms[0].drawRoom();
 
-$(document).on('click','.monster',function(){
-	$(this).append($('#monsterMenu'));
-	$('#monsterMenu').css('display','inline-block');
+$(document).on('click','.monster',function(){	
+	$(this).append($(monsterMenu).css('display','inline-block'));
+
 })
 
-$(document).on('click','#attack',function(){
+$(document).on('click','.attack',function(){
 	var thisMonster = world.getCurrentRoom().monsters[$(this).parent().parent().attr('data-id')];
-	$('#monsterMenu').css('display','none');
-	$('body').append($('#monsterMenu'));
+	$(this).closest('.monsterMenu').hide();
 	world.battle(world.player,thisMonster);
+	return false;
+})
+
+$(document).on('click','.examine',function(){
+	var thisMonster = world.getCurrentRoom().monsters[$(this).parent().parent().attr('data-id')];
+	console.log(thisMonster.type);
+	return false;
 })
 
 $(document).on('click','.item',function(){
@@ -235,8 +242,8 @@ $(document).on('click','#openInventory',function(){
 })
 
 $(document).on('click', '#inventory img', function(){
-	var thisItem = world.player.inventory;
-	world.player.use();
+	var thisItem = world.player.inventory[$(this).attr('data-id')];
+	world.player.use(thisItem);
 })
 
 

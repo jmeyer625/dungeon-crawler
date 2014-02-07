@@ -22,7 +22,12 @@ img {
 }
 
 #inventory {
+	width: 110px;
+}
+
+#inventory li {
 	list-style-type: none;
+	display: inline-block;
 }
 
 #inventory img {
