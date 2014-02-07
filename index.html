@@ -7,9 +7,19 @@
 </head>
 <body>
 
+<div id="controlPanel">
+	<button id="openInventory">Open Inventory</button>
+
+</div>
+
 <div id="view">
 	
 
+</div>
+
+<div id="monsterMenu">
+	<button id="attack">Attack</button>
+	<button id="examine">Examine</button>
 </div>
 
 
@@ -21,6 +31,16 @@
 	
 	<script type="x-handlebars-template" id="playerTemplate">
 		<div class="player"><img src={{image}}></div>
+	</script>
+
+	<script type="x-handlebars-template" id="itemTemplate">
+		<div class={{type}} style="top:{{top}};left:{{left}}" data-id="{{id}}"><img src="{{image}}"></div>
+	</script>
+
+	<script type="x-handlebars-template" id="inventoryTemplate">
+		<ul id="inventory">
+			{{#each inventory}}<li><img src="{{image}}"></li>{{/each}}
+		</ul>
 	</script>
 
 	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>

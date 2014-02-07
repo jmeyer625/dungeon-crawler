@@ -2,9 +2,33 @@
 	width: 1000px;
 	height: 800px;
 	margin: auto;
+	position: relative;
 }
 
 img {
 	height: 150px;
 }
 
+.item img{
+	height: 30px;
+}
+
+.item,.monster {
+	position: absolute;
+}
+
+.monster img {
+	height: 150px;
+}
+
+#inventory {
+	list-style-type: none;
+}
+
+#inventory img {
+	height: 30px;
+}
+
+#monsterMenu {
+	display: none;
+}
